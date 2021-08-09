@@ -1,4 +1,4 @@
-module github.com/dfuse-io/binary
+module github.com/streamingfast/binary
 
 go 1.14
 

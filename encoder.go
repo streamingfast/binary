@@ -101,7 +101,7 @@ func (e *Encoder) encode(rv reflect.Value, opt *option) (err error) {
 			zlog.Debug("encode: array", zap.Int("length", l), zap.Stringer("type", rv.Kind()))
 		}
 		for i := 0; i < l; i++ {
-			if err = e.encode(rv.Index(i), opt); err != nil {
+			if err = e.encode(rv.Index(i), nil); err != nil {
 				return
 			}
 		}

@@ -354,13 +354,13 @@ func (e *Encoder) encodeStruct(rt reflect.Type, rv reflect.Value) (err error) {
 		rv := rv.Field(i)
 
 		if fieldTag.SizeOf != nil {
+			if traceEnabled {
+				zlog.Debug("encode: struct field has sizeof tag",
+					zap.Strings("sizeof_field_names", fieldTag.SizeOf),
+					zap.String("struct_field_name", structField.Name),
+				)
+			}
 			for _, sizeOfField := range fieldTag.SizeOf {
-				if traceEnabled {
-					zlog.Debug("encode: struct field has sizeof tag",
-						zap.String("sizeof_field_name", sizeOfField),
-						zap.String("struct_field_name", structField.Name),
-					)
-				}
 				sizeOfMap[sizeOfField] = sizeof(structField.Type, rv)
 			}
 		}

@@ -330,15 +330,17 @@ func (d *Decoder) decodeStruct(rt reflect.Type, rv reflect.Value) (err error) {
 			return
 		}
 
-		if fieldTag.SizeOf != "" {
+		if fieldTag.SizeOf != nil {
 			size := sizeof(structField.Type, v)
-			if traceEnabled {
-				zlog.Debug("setting size of field",
-					zap.String("field_name", fieldTag.SizeOf),
-					zap.Int("size", size),
-				)
+			for _, sizeOfField := range fieldTag.SizeOf {
+				if traceEnabled {
+					zlog.Debug("setting size of field",
+						zap.String("field_name", sizeOfField),
+						zap.Int("size", size),
+					)
+				}
+				sizeOfMap[sizeOfField] = size
 			}
-			sizeOfMap[fieldTag.SizeOf] = size
 		}
 	}
 	return

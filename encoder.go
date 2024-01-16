@@ -330,6 +330,13 @@ func (e *Encoder) WriteString(s string) (err error) {
 	return e.WriteByteArray([]byte(s), true)
 }
 
+func (e *Encoder) WriteRaw(b []byte) error {
+	if traceEnabled {
+		zlog.Debug("encode: write raw byte array")
+	}
+	return e.toWriter(b)
+}
+
 func (e *Encoder) encodeStruct(rt reflect.Type, rv reflect.Value) (err error) {
 	l := rv.NumField()
 
@@ -353,20 +360,22 @@ func (e *Encoder) encodeStruct(rt reflect.Type, rv reflect.Value) (err error) {
 
 		rv := rv.Field(i)
 
-		if fieldTag.SizeOf != "" {
+		if fieldTag.SizeOf != nil {
 			if traceEnabled {
 				zlog.Debug("encode: struct field has sizeof tag",
-					zap.String("sizeof_field_name", fieldTag.SizeOf),
+					zap.Strings("sizeof_field_names", fieldTag.SizeOf),
 					zap.String("struct_field_name", structField.Name),
 				)
 			}
-			sizeOfMap[fieldTag.SizeOf] = sizeof(structField.Type, rv)
+			for _, sizeOfField := range fieldTag.SizeOf {
+				sizeOfMap[sizeOfField] = sizeof(structField.Type, rv)
+			}
 		}
 
 		if !rv.CanInterface() {
 			if traceEnabled {
 				zlog.Debug("encode:  skipping field: unable to interface field, probably since field is not exported",
-					zap.String("sizeof_field_name", fieldTag.SizeOf),
+					zap.Strings("sizeof_field_name", fieldTag.SizeOf),
 					zap.String("struct_field_name", structField.Name),
 				)
 			}

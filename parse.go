@@ -7,7 +7,7 @@ import (
 )
 
 type fieldTag struct {
-	SizeOf          string
+	SizeOf          []string
 	Skip            bool
 	Order           binary.ByteOrder
 	Optional        bool
@@ -21,8 +21,8 @@ func parseFieldTag(tag reflect.StructTag) *fieldTag {
 	tagStr := tag.Get("bin")
 	for _, s := range strings.Split(tagStr, " ") {
 		if strings.HasPrefix(s, "sizeof=") {
-			tmp := strings.SplitN(s, "=", 2)
-			t.SizeOf = tmp[1]
+			_, tmp, _ := strings.Cut(s, "=")
+			t.SizeOf = strings.Split(tmp, ",")
 		} else if s == "big" {
 			t.Order = binary.BigEndian
 		} else if s == "little" {

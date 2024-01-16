@@ -34,7 +34,7 @@ func Test_parseFieldTag(t *testing.T) {
 			tag:  `bin:"sizeof=Tokens"`,
 			expectValue: &fieldTag{
 				Order:  binary.LittleEndian,
-				SizeOf: "Tokens",
+				SizeOf: []string{"Tokens"},
 			},
 		},
 		{
@@ -51,7 +51,15 @@ func Test_parseFieldTag(t *testing.T) {
 			expectValue: &fieldTag{
 				Order:    binary.LittleEndian,
 				Optional: true,
-				SizeOf:   "Nodes",
+				SizeOf:   []string{"Nodes"},
+			},
+		},
+		{
+			name: "multiple sizeof's",
+			tag:  `bin:"sizeof=Nodes,Tokens"`,
+			expectValue: &fieldTag{
+				Order:  binary.LittleEndian,
+				SizeOf: []string{"Nodes", "Tokens"},
 			},
 		},
 	}

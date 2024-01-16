@@ -330,6 +330,13 @@ func (e *Encoder) WriteString(s string) (err error) {
 	return e.WriteByteArray([]byte(s), true)
 }
 
+func (e *Encoder) WriteRaw(b []byte) error {
+	if traceEnabled {
+		zlog.Debug("encode: write raw byte array")
+	}
+	return e.toWriter(b)
+}
+
 func (e *Encoder) encodeStruct(rt reflect.Type, rv reflect.Value) (err error) {
 	l := rv.NumField()
 
